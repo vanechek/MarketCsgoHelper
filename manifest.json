@@ -1,0 +1,22 @@
+{
+    "name": "MarketCsgoHelper",
+    "description": "MarketCsgoHelper",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "author": "vanecheK",
+    "browser_action": {
+        "default_title": "MarketCsgoHelper",
+        "default_popup": "index.html",
+        "default_icon": "icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://market.csgo.com/item/*",
+                "https://market.csgo.com/*"
+            ],
+            "js": ["./node_modules/jquery/dist/jquery.js", "content.js"]
+        }
+    ],
+    "permissions": ["activeTab"]
+}

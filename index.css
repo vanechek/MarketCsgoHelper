@@ -1,0 +1,68 @@
+body {
+    margin: 0;
+}
+
+.main {
+    width: 300px;
+    height: 250px;
+}
+
+.header {
+    background: #82c4c9;
+    width: 100%;
+    height: 50px;
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    color: white;
+}
+
+
+span.token.title {
+    right: 125px;
+    top: 85px;
+}
+
+input.token.text {
+    top: 114px;
+    left: 68px;
+}
+
+button.token.profit_button {
+    top: 155px;
+    left: 162px;
+}
+
+.token {
+    position: absolute;
+}
+
+
+span.token.title {
+    right: 106px;
+    top: 79px;
+    font-size: 16px;
+}
+
+input.token.text {
+    top: 114px;
+    left: 46px;
+    width: 208px;
+}
+
+
+input#success_token {
+    left: -72px;
+    position: relative;
+    top: 105px;
+}
+
+span.success_title {
+    left: 56px;
+    position: relative;
+    top: 103px;
+    font-size: 14px;
+}
