@@ -18,7 +18,6 @@ if ($(".rectanglestats > .rectanglestat").length > 0) {
 }
 
 if($('.sameitem').length > 0){
-    debugger;
     let propertySelectedItems = $('.item-appearance')[0].dataset.wear;
     let items = $('.sameitem');
 
@@ -26,6 +25,18 @@ if($('.sameitem').length > 0){
         if(items[i].dataset.wear !== propertySelectedItems){
             items[i].remove();
         }
+    }
+}
+
+if($('.table-list.tracking-items').length > 0){
+    debugger;
+    let ordersItems = $('.table-list.tracking-items')[0].childNodes[1].children;
+    for (let i = 0; i < ordersItems.length; i++) {
+        if(ordersItems[i].dataset.item === undefined){
+            continue;
+        }
+        let info = ordersItems[i].dataset.item.split('/');
+        setPriceItemInOrders(info[0], info[1], localStorage.getItem('token'), ordersItems[i]);
     }
 }
 
@@ -61,15 +72,37 @@ $('.item').hover(function name(event) {
         }
     }
     if (localStorage.getItem('token')) {
-        getItemInfo(classid, instanceid, localStorage.getItem('token'), target);
+        setInfoInMarket(classid, instanceid, localStorage.getItem('token'), target);
         console.log(`${classid}, ${instanceid}`);
     } else {
         alert("Не введён токен");
     }
 })
 
+async function setPriceItemInOrders(classid, instanceid, token, target){
+    await fetch(`https://market.csgo.com/api/ItemInfo/${classid}_${instanceid}/ru/?key=${token}`)
+    .then(response => response.json())
+    .then(result => {
+        if (result.success || result.offers.length > 0) {
+            let firstPrice = result.offers[0].price;
 
-async function getItemInfo(classid, instanceid, token, target) {
+            let two = firstPrice.length - 2;
+             let newPrice = "";
+             for (let i = 0; i < firstPrice.length; i++) {
+                 if (two == i) {
+                     newPrice += "."
+                 }
+                  newPrice += firstPrice[i];
+             }
+
+            let price =  getPriceWithWhiteSpace(newPrice);
+
+            target.children[0].children[0].innerText = " " + target.children[0].children[0].innerText + "Первая цена: " + price;
+        }
+    });
+}
+
+async function setInfoInMarket(classid, instanceid, token, target) {
 
     if (target.getElementsByClassName('profit').length === 0) {
         var tg = target.getElementsByClassName("image")[0];
@@ -131,7 +164,6 @@ async function getItemInfo(classid, instanceid, token, target) {
                         await fetch(`https://market.csgo.com/api/InsertOrder/${col[0]}/${col[1]}/${col[2]}//?key=${localStorage.getItem('token')}`)
                             .then(response => response.json())
                             .then(result => {
-                                debugger;
                                 if (result.error) {
                                     alert(result.error);
                                 }
@@ -144,3 +176,4 @@ async function getItemInfo(classid, instanceid, token, target) {
             }
         })
 }
+

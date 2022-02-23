@@ -13,7 +13,8 @@
         {
             "matches": [
                 "https://market.csgo.com/item/*",
-                "https://market.csgo.com/*"
+                "https://market.csgo.com/*",
+                "https://market.csgo.com/orders/"
             ],
             "js": ["./node_modules/jquery/dist/jquery.js", "content.js"]
         }
