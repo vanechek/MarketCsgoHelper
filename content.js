@@ -1,3 +1,6 @@
+/**
+ * В карточке предмета расчитывает прибыль от первой заявки.
+ */
 if ($(".rectanglestats > .rectanglestat").length > 0) {
     let rectanglestat = document.getElementsByClassName('rectanglestats')[1]
         .getElementsByClassName('rectanglestat')[1];
@@ -17,6 +20,9 @@ if ($(".rectanglestats > .rectanglestat").length > 0) {
     rectanglestat.appendChild(p);
 }
 
+/**
+ * Удаляет из карточки лишние предметы с другим качеством. 
+ */
 if($('.sameitem').length > 0){
     let propertySelectedItems = $('.item-appearance')[0].dataset.wear;
     let items = $('.sameitem');
@@ -27,10 +33,11 @@ if($('.sameitem').length > 0){
         }
     }
 }
-
+/**
+ * Добавляет в заявках основную цену.
+ */
 if($('.table-list.tracking-items').length > 0){
-    debugger;
-    let ordersItems = $('.table-list.tracking-items')[0].childNodes[1].children;
+    let ordersItems = getAllOrder();
     for (let i = 0; i < ordersItems.length; i++) {
         if(ordersItems[i].dataset.item === undefined){
             continue;
@@ -40,12 +47,60 @@ if($('.table-list.tracking-items').length > 0){
     }
 }
 
+/**
+ * Добавляет кнопка рядом с REMOVE ALL
+ */
+if($('.pagination.pagination-top').length > 0) {
+    let buttons = $('.pagination.pagination-top')[0];
+    let b = document.createElement("a");
+    b.className = `pagi-link reset-price-all`;
+    b.innerText = 'RESET SUKA';
+    buttons.appendChild(b)
+}
 
+/**
+ * Обработчик новой кнопки.
+ */
+$('.pagi-link.reset-price-all').click(async function(){
+    debugger;
+    var orders = getAllOrder();
+    for(let i = 0; i < orders.length; i++){
+        if(orders[i].dataset.item === undefined){
+            continue;
+        }
+
+        let info = orders[i].dataset.item.split('/');
+        orders[i].children[1].children[0].innerText  = "0.01";
+        await fetch(`https://market.csgo.com/api/UpdateOrder/${info[0]}/${info[1]}/1/?key=${localStorage.getItem('token')}`)
+        .then(response => response.json())
+        .then(result => {
+            if(result.success)
+            console.log("Обновлён");
+        });
+    }
+})
+
+/**
+ * 
+ * @param {*} price цена с пробелом.
+ * @returns 
+ */
 function getPriceWithWhiteSpace(price) {
     var newPrice = price.replace(/\s/g, "")
     return parseFloat(newPrice);
 }
 
+/**
+ * Получает все завки
+ * @returns заявки.
+ */
+function getAllOrder(){
+    return $('.table-list.tracking-items')[0].childNodes[1].children;
+}
+
+/**
+ * Обработчик наведении на предмет.
+ */
 $('.item').hover(function name(event) {
     var target = event.currentTarget;
 	if(target.getElementsByClassName('info').length > 0){
@@ -79,6 +134,13 @@ $('.item').hover(function name(event) {
     }
 })
 
+/**
+ * Установка цены в карточке предмета.
+ * @param {*} classid Номер класса.
+ * @param {*} instanceid Номер источника.
+ * @param {*} token Ключ апи.
+ * @param {*} target Элемент в котором будем проставка цены.
+ */
 async function setPriceItemInOrders(classid, instanceid, token, target){
     await fetch(`https://market.csgo.com/api/ItemInfo/${classid}_${instanceid}/ru/?key=${token}`)
     .then(response => response.json())
@@ -102,6 +164,13 @@ async function setPriceItemInOrders(classid, instanceid, token, target){
     });
 }
 
+/**
+ * Расчёт профита предмета и добавление кнопки для добавления в автозакуп. 
+ * @param {*} classid Номер класса.
+ * @param {*} instanceid Номер источника.
+ * @param {*} token Ключ апи.
+ * @param {*} target Элемент в котором будем проставка цены.
+ */
 async function setInfoInMarket(classid, instanceid, token, target) {
 
     if (target.getElementsByClassName('profit').length === 0) {
@@ -176,4 +245,3 @@ async function setInfoInMarket(classid, instanceid, token, target) {
             }
         })
 }
-
